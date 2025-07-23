@@ -1,0 +1,31 @@
+﻿@model IEnumerable<HastaneOtomasyonu.Models.Randevu>
+@{
+    ViewBag.Title = "Randevular";
+    var hastalar = (List<HastaneOtomasyonu.Models.Hasta>)ViewBag.Hastalar;
+    var doktorlar = (List<HastaneOtomasyonu.Models.Doktor>)ViewBag.Doktorlar;
+}
+
+<h2>Randevu Listesi</h2>
+<p>
+    @Html.ActionLink("Yeni Randevu Ekle", "Ekle")
+</p>
+
+<table class="table table-striped">
+    <tr>
+        <th>Hasta</th>
+        <th>Doktor</th>
+        <th>Tarih</th>
+        <th>Saat</th>
+        <th>İşlem</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@hastalar.FirstOrDefault(h => h.Id == item.HastaId)?.Ad</td>
+            <td>@doktorlar.FirstOrDefault(d => d.Id == item.DoktorId)?.Ad</td>
+            <td>@(item.Tarih != null ? item.Tarih.Value.ToShortDateString() : "")</td>
+            <td>@item.Saat</td>
+            <td>@Html.ActionLink("Sil", "Sil", new { id = item.Id })</td>
+        </tr>
+    }
+</table>

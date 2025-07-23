@@ -1,0 +1,427 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="HastaneOtomasyonuModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Branslar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Ad" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Doktorlar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Ad" Type="nvarchar" MaxLength="50" />
+          <Property Name="Soyad" Type="nvarchar" MaxLength="50" />
+          <Property Name="BransId" Type="int" />
+          <Property Name="SonGuncellemeTarihi" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Hastalar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Ad" Type="nvarchar" MaxLength="50" />
+          <Property Name="Soyad" Type="nvarchar" MaxLength="50" />
+          <Property Name="TCNo" Type="nvarchar" MaxLength="11" />
+          <Property Name="DogumTarihi" Type="date" />
+          <Property Name="Cinsiyet" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Randevular">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HastaId" Type="int" />
+          <Property Name="DoktorId" Type="int" />
+          <Property Name="Tarih" Type="date" />
+          <Property Name="Saat" Type="time" Precision="7" />
+        </EntityType>
+        <EntityType Name="RandevuLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RandevuId" Type="int" />
+          <Property Name="Tarih" Type="date" />
+          <Property Name="Saat" Type="time" Precision="7" />
+          <Property Name="EklemeZamani" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'HastaneOtomasyonu.dbo.vw_RandevuDetaylari' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vw_RandevuDetaylari">
+          <Key>
+            <PropertyRef Name="RandevuId" />
+          </Key>
+          <Property Name="RandevuId" Type="int" Nullable="false" />
+          <Property Name="HastaAdSoyad" Type="nvarchar" MaxLength="101" />
+          <Property Name="DoktorAdSoyad" Type="nvarchar" MaxLength="101" />
+          <Property Name="Brans" Type="nvarchar" MaxLength="50" />
+          <Property Name="Tarih" Type="date" />
+          <Property Name="Saat" Type="time" Precision="7" />
+        </EntityType>
+        <Association Name="FK__Doktorlar__Brans__4316F928">
+          <End Role="Branslar" Type="Self.Branslar" Multiplicity="0..1" />
+          <End Role="Doktorlar" Type="Self.Doktorlar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branslar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Doktorlar">
+              <PropertyRef Name="BransId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Randevula__Dokto__46E78A0C">
+          <End Role="Doktorlar" Type="Self.Doktorlar" Multiplicity="0..1" />
+          <End Role="Randevular" Type="Self.Randevular" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doktorlar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Randevular">
+              <PropertyRef Name="DoktorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Randevula__Hasta__45F365D3">
+          <End Role="Hastalar" Type="Self.Hastalar" Multiplicity="0..1" />
+          <End Role="Randevular" Type="Self.Randevular" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hastalar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Randevular">
+              <PropertyRef Name="HastaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_DoktorAdSoyad" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
+          <Parameter Name="DoktorId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="fn_HastaRandevuSayisi" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="HastaId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="fn_HastaYasHesapla" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="DogumTarihi" Type="date" Mode="In" />
+        </Function>
+        <Function Name="sp_DoktorRandevuSayisi" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DoktorId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_HastaBilgileriniGuncelle" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HastaId" Type="int" Mode="In" />
+          <Parameter Name="Ad" Type="nvarchar" Mode="In" />
+          <Parameter Name="Soyad" Type="nvarchar" Mode="In" />
+          <Parameter Name="TCNo" Type="nvarchar" Mode="In" />
+          <Parameter Name="DogumTarihi" Type="date" Mode="In" />
+        </Function>
+        <Function Name="sp_HastaRandevuEkle" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HastaId" Type="int" Mode="In" />
+          <Parameter Name="DoktorId" Type="int" Mode="In" />
+          <Parameter Name="Tarih" Type="date" Mode="In" />
+          <Parameter Name="Saat" Type="time" Mode="In" />
+        </Function>
+        <Function Name="sp_RandevuListeleByDoktor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DoktorId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_RandevuSil" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RandevuId" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="HastaneOtomasyonuModelStoreContainer">
+          <EntitySet Name="Branslar" EntityType="Self.Branslar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Doktorlar" EntityType="Self.Doktorlar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Hastalar" EntityType="Self.Hastalar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Randevular" EntityType="Self.Randevular" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RandevuLog" EntityType="Self.RandevuLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vw_RandevuDetaylari" EntityType="Self.vw_RandevuDetaylari" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vw_RandevuDetaylari].[RandevuId] AS [RandevuId], 
+    [vw_RandevuDetaylari].[HastaAdSoyad] AS [HastaAdSoyad], 
+    [vw_RandevuDetaylari].[DoktorAdSoyad] AS [DoktorAdSoyad], 
+    [vw_RandevuDetaylari].[Brans] AS [Brans], 
+    [vw_RandevuDetaylari].[Tarih] AS [Tarih], 
+    [vw_RandevuDetaylari].[Saat] AS [Saat]
+    FROM [dbo].[vw_RandevuDetaylari] AS [vw_RandevuDetaylari]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__Doktorlar__Brans__4316F928" Association="Self.FK__Doktorlar__Brans__4316F928">
+            <End Role="Branslar" EntitySet="Branslar" />
+            <End Role="Doktorlar" EntitySet="Doktorlar" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Randevula__Dokto__46E78A0C" Association="Self.FK__Randevula__Dokto__46E78A0C">
+            <End Role="Doktorlar" EntitySet="Doktorlar" />
+            <End Role="Randevular" EntitySet="Randevular" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Randevula__Hasta__45F365D3" Association="Self.FK__Randevula__Hasta__45F365D3">
+            <End Role="Hastalar" EntitySet="Hastalar" />
+            <End Role="Randevular" EntitySet="Randevular" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="HastaneOtomasyonuModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Branslar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Ad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Doktorlar" Relationship="Self.FK__Doktorlar__Brans__4316F928" FromRole="Branslar" ToRole="Doktorlar" />
+        </EntityType>
+        <EntityType Name="Doktorlar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Ad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Soyad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BransId" Type="Int32" />
+          <Property Name="SonGuncellemeTarihi" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Branslar" Relationship="Self.FK__Doktorlar__Brans__4316F928" FromRole="Doktorlar" ToRole="Branslar" />
+          <NavigationProperty Name="Randevular" Relationship="Self.FK__Randevula__Dokto__46E78A0C" FromRole="Doktorlar" ToRole="Randevular" />
+        </EntityType>
+        <EntityType Name="Hastalar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Ad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Soyad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TCNo" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="DogumTarihi" Type="DateTime" Precision="0" />
+          <Property Name="Cinsiyet" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Randevular" Relationship="Self.FK__Randevula__Hasta__45F365D3" FromRole="Hastalar" ToRole="Randevular" />
+        </EntityType>
+        <EntityType Name="Randevular">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HastaId" Type="Int32" />
+          <Property Name="DoktorId" Type="Int32" />
+          <Property Name="Tarih" Type="DateTime" Precision="0" />
+          <Property Name="Saat" Type="Time" Precision="7" />
+          <NavigationProperty Name="Doktorlar" Relationship="Self.FK__Randevula__Dokto__46E78A0C" FromRole="Randevular" ToRole="Doktorlar" />
+          <NavigationProperty Name="Hastalar" Relationship="Self.FK__Randevula__Hasta__45F365D3" FromRole="Randevular" ToRole="Hastalar" />
+        </EntityType>
+        <EntityType Name="RandevuLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RandevuId" Type="Int32" />
+          <Property Name="Tarih" Type="DateTime" Precision="0" />
+          <Property Name="Saat" Type="Time" Precision="7" />
+          <Property Name="EklemeZamani" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="vw_RandevuDetaylari">
+          <Key>
+            <PropertyRef Name="RandevuId" />
+          </Key>
+          <Property Name="RandevuId" Type="Int32" Nullable="false" />
+          <Property Name="HastaAdSoyad" Type="String" MaxLength="101" FixedLength="false" Unicode="true" />
+          <Property Name="DoktorAdSoyad" Type="String" MaxLength="101" FixedLength="false" Unicode="true" />
+          <Property Name="Brans" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Tarih" Type="DateTime" Precision="0" />
+          <Property Name="Saat" Type="Time" Precision="7" />
+        </EntityType>
+        <Association Name="FK__Doktorlar__Brans__4316F928">
+          <End Role="Branslar" Type="Self.Branslar" Multiplicity="0..1" />
+          <End Role="Doktorlar" Type="Self.Doktorlar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branslar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Doktorlar">
+              <PropertyRef Name="BransId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Randevula__Dokto__46E78A0C">
+          <End Role="Doktorlar" Type="Self.Doktorlar" Multiplicity="0..1" />
+          <End Role="Randevular" Type="Self.Randevular" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doktorlar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Randevular">
+              <PropertyRef Name="DoktorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Randevula__Hasta__45F365D3">
+          <End Role="Hastalar" Type="Self.Hastalar" Multiplicity="0..1" />
+          <End Role="Randevular" Type="Self.Randevular" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Hastalar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Randevular">
+              <PropertyRef Name="HastaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="HastaneOtomasyonuEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Branslar" EntityType="Self.Branslar" />
+          <EntitySet Name="Doktorlar" EntityType="Self.Doktorlar" />
+          <EntitySet Name="Hastalar" EntityType="Self.Hastalar" />
+          <EntitySet Name="Randevular" EntityType="Self.Randevular" />
+          <EntitySet Name="RandevuLog" EntityType="Self.RandevuLog" />
+          <EntitySet Name="vw_RandevuDetaylari" EntityType="Self.vw_RandevuDetaylari" />
+          <AssociationSet Name="FK__Doktorlar__Brans__4316F928" Association="Self.FK__Doktorlar__Brans__4316F928">
+            <End Role="Branslar" EntitySet="Branslar" />
+            <End Role="Doktorlar" EntitySet="Doktorlar" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Randevula__Dokto__46E78A0C" Association="Self.FK__Randevula__Dokto__46E78A0C">
+            <End Role="Doktorlar" EntitySet="Doktorlar" />
+            <End Role="Randevular" EntitySet="Randevular" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Randevula__Hasta__45F365D3" Association="Self.FK__Randevula__Hasta__45F365D3">
+            <End Role="Hastalar" EntitySet="Hastalar" />
+            <End Role="Randevular" EntitySet="Randevular" />
+          </AssociationSet>
+          <FunctionImport Name="sp_DoktorRandevuSayisi" ReturnType="Collection(Int32)">
+            <Parameter Name="DoktorId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_HastaBilgileriniGuncelle">
+            <Parameter Name="HastaId" Mode="In" Type="Int32" />
+            <Parameter Name="Ad" Mode="In" Type="String" />
+            <Parameter Name="Soyad" Mode="In" Type="String" />
+            <Parameter Name="TCNo" Mode="In" Type="String" />
+            <Parameter Name="DogumTarihi" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="sp_HastaRandevuEkle">
+            <Parameter Name="HastaId" Mode="In" Type="Int32" />
+            <Parameter Name="DoktorId" Mode="In" Type="Int32" />
+            <Parameter Name="Tarih" Mode="In" Type="DateTime" />
+            <Parameter Name="Saat" Mode="In" Type="Time" />
+          </FunctionImport>
+          <FunctionImport Name="sp_RandevuListeleByDoktor" ReturnType="Collection(HastaneOtomasyonuModel.sp_RandevuListeleByDoktor_Result)">
+            <Parameter Name="DoktorId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_RandevuSil">
+            <Parameter Name="RandevuId" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="sp_RandevuListeleByDoktor_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="HastaAdSoyad" Nullable="true" MaxLength="101" />
+          <Property Type="DateTime" Name="Tarih" Nullable="true" />
+          <Property Type="Time" Name="Saat" Nullable="true" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="HastaneOtomasyonuModelStoreContainer" CdmEntityContainer="HastaneOtomasyonuEntities">
+          <EntitySetMapping Name="Branslar">
+            <EntityTypeMapping TypeName="HastaneOtomasyonuModel.Branslar">
+              <MappingFragment StoreEntitySet="Branslar">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Ad" ColumnName="Ad" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Doktorlar">
+            <EntityTypeMapping TypeName="HastaneOtomasyonuModel.Doktorlar">
+              <MappingFragment StoreEntitySet="Doktorlar">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Ad" ColumnName="Ad" />
+                <ScalarProperty Name="Soyad" ColumnName="Soyad" />
+                <ScalarProperty Name="BransId" ColumnName="BransId" />
+                <ScalarProperty Name="SonGuncellemeTarihi" ColumnName="SonGuncellemeTarihi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Hastalar">
+            <EntityTypeMapping TypeName="HastaneOtomasyonuModel.Hastalar">
+              <MappingFragment StoreEntitySet="Hastalar">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Ad" ColumnName="Ad" />
+                <ScalarProperty Name="Soyad" ColumnName="Soyad" />
+                <ScalarProperty Name="TCNo" ColumnName="TCNo" />
+                <ScalarProperty Name="DogumTarihi" ColumnName="DogumTarihi" />
+                <ScalarProperty Name="Cinsiyet" ColumnName="Cinsiyet" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Randevular">
+            <EntityTypeMapping TypeName="HastaneOtomasyonuModel.Randevular">
+              <MappingFragment StoreEntitySet="Randevular">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="HastaId" ColumnName="HastaId" />
+                <ScalarProperty Name="DoktorId" ColumnName="DoktorId" />
+                <ScalarProperty Name="Tarih" ColumnName="Tarih" />
+                <ScalarProperty Name="Saat" ColumnName="Saat" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RandevuLog">
+            <EntityTypeMapping TypeName="HastaneOtomasyonuModel.RandevuLog">
+              <MappingFragment StoreEntitySet="RandevuLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RandevuId" ColumnName="RandevuId" />
+                <ScalarProperty Name="Tarih" ColumnName="Tarih" />
+                <ScalarProperty Name="Saat" ColumnName="Saat" />
+                <ScalarProperty Name="EklemeZamani" ColumnName="EklemeZamani" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_RandevuDetaylari">
+            <EntityTypeMapping TypeName="HastaneOtomasyonuModel.vw_RandevuDetaylari">
+              <MappingFragment StoreEntitySet="vw_RandevuDetaylari">
+                <ScalarProperty Name="RandevuId" ColumnName="RandevuId" />
+                <ScalarProperty Name="HastaAdSoyad" ColumnName="HastaAdSoyad" />
+                <ScalarProperty Name="DoktorAdSoyad" ColumnName="DoktorAdSoyad" />
+                <ScalarProperty Name="Brans" ColumnName="Brans" />
+                <ScalarProperty Name="Tarih" ColumnName="Tarih" />
+                <ScalarProperty Name="Saat" ColumnName="Saat" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_DoktorRandevuSayisi" FunctionName="HastaneOtomasyonuModel.Store.sp_DoktorRandevuSayisi" />
+          <FunctionImportMapping FunctionImportName="sp_HastaBilgileriniGuncelle" FunctionName="HastaneOtomasyonuModel.Store.sp_HastaBilgileriniGuncelle" />
+          <FunctionImportMapping FunctionImportName="sp_HastaRandevuEkle" FunctionName="HastaneOtomasyonuModel.Store.sp_HastaRandevuEkle" />
+          <FunctionImportMapping FunctionImportName="sp_RandevuListeleByDoktor" FunctionName="HastaneOtomasyonuModel.Store.sp_RandevuListeleByDoktor">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HastaneOtomasyonuModel.sp_RandevuListeleByDoktor_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="HastaAdSoyad" ColumnName="HastaAdSoyad" />
+                <ScalarProperty Name="Tarih" ColumnName="Tarih" />
+                <ScalarProperty Name="Saat" ColumnName="Saat" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_RandevuSil" FunctionName="HastaneOtomasyonuModel.Store.sp_RandevuSil" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

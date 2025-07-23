@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Giriş";
+}
+
+<h2>Kullanıcı Girişi</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        <label>Email:</label>
+        <input type="text" name="email" class="form-control" />
+    </div>
+    <div>
+        <label>Şifre:</label>
+        <input type="password" name="sifre" class="form-control" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+}
+
+@if (ViewBag.Hata != null)
+{
+    <p style="color:red;">@ViewBag.Hata</p>
+}

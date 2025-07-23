@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Hastane Otomasyonu</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">@Html.ActionLink("Hastalar", "Index", "Hasta", new { }, new { @class = "nav-link" })</li>
+                <li class="nav-item">@Html.ActionLink("Doktorlar", "Index", "Doktor", new { }, new { @class = "nav-link" })</li>
+                <li class="nav-item">@Html.ActionLink("Randevular", "Index", "Randevu", new { }, new { @class = "nav-link" })</li>
+                <li class="nav-item">@Html.ActionLink("Çıkış", "Cikis", "Login", new { }, new { @class = "nav-link" })</li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        @RenderBody()
+    </div>
+</body>
+</html>

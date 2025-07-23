@@ -1,0 +1,40 @@
+﻿@model IEnumerable<HastaneOtomasyonu.Models.Doktor>
+
+@{
+    ViewBag.Title = "Doktor Listesi";
+}
+
+<h2>Doktorlar</h2>
+
+<p>
+    @Html.ActionLink("Yeni Doktor Ekle", "Ekle")
+</p>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Ad</th>
+        <th>Soyad</th>
+        <th>Branş</th>
+        <th>Son Güncelleme</th>
+        <th>İşlemler</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Ad</td>
+            <td>@item.Soyad</td>
+            <td>
+                @{
+                    var brans = ViewBag.BransListesi != null ? ((List<HastaneOtomasyonu.Models.Brans>)ViewBag.BransListesi).FirstOrDefault(b => b.Id == item.BransId)?.Ad : "";
+                    @brans
+                }
+            </td>
+            <td>@(item.SonGuncellemeTarihi.HasValue ? item.SonGuncellemeTarihi.Value.ToShortDateString() : "")</td>
+            <td>
+                @Html.ActionLink("Düzenle", "Duzenle", new { id = item.Id }) |
+                @Html.ActionLink("Sil", "Sil", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>

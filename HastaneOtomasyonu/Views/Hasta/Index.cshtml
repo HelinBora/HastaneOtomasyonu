@@ -1,0 +1,37 @@
+﻿@model IEnumerable<HastaneOtomasyonu.Models.Hasta>
+
+@{
+    ViewBag.Title = "Hasta Listesi";
+}
+
+<h2>Hasta Listesi</h2>
+
+<p>
+    @Html.ActionLink("Yeni Hasta Ekle", "Ekle")
+</p>
+
+<table class="table table-striped">
+    <tr>
+        <th>Ad</th>
+        <th>Soyad</th>
+        <th>TC No</th>
+        <th>Doğum Tarihi</th>
+        <th>Cinsiyet</th>
+        <th>İşlemler</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Ad</td>
+            <td>@item.Soyad</td>
+            <td>@item.TCNo</td>
+            <td>@(item.DogumTarihi.HasValue ? item.DogumTarihi.Value.ToShortDateString() : "")</td>
+            <td>@item.Cinsiyet</td>
+            <td>
+                @Html.ActionLink("Düzenle", "Duzenle", new { id = item.Id }) |
+                @Html.ActionLink("Sil", "Sil", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>
